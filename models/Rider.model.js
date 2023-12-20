@@ -31,11 +31,37 @@ const RiderSchema = mongoose.Schema(
     story: {
       type: String,
     },
+    worldChampionship: {
+      type: String,
+    },
+    victories: {
+      type: String,
+    },
+    podiums: {
+      type: String,
+    },
+    poles: {
+      type: String,
+    },
+    races: {
+      type: String,
+    },
+    legend: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     virtual: true,
   }
 );
+
+RiderSchema.virtual("likes", {
+  ref: "Like",
+  localField: "_id",
+  foreignField: "rider",
+  justOne: false,
+});
 
 RiderSchema.virtual("comments", {
   ref: "Comment",

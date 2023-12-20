@@ -30,6 +30,7 @@
         <small class="text-body-secondary">by {{this.user.username}}</small>
         <a href="/comments/{{this._id}}/delete" style="width: fit-content;"><i data-feather="trash-2" width="16" style="color: red;"></i></a>
       </div>
+      
     </div>
     {{/each}}
     <form action="/comments/{{rider._id}}/create" method="POST">

@@ -4,6 +4,8 @@ const Comment = require("../models/Comment.model");
 module.exports.list = function (req, res, next) {
   const query = {};
 
+  query.legend = !!req.query.legend;
+
   if (req.query.search) {
     const regex = new RegExp(req.query.search, "i");
 
@@ -11,7 +13,11 @@ module.exports.list = function (req, res, next) {
   }
 
   Rider.find(query)
-    .then((riders) => res.render("riders/list", { riders }))
+    .populate('likes')
+    .then((riders) => {
+    console.log(riders)
+    res.render("riders/list", { riders })
+  })
     .catch((error) => next(error));
 };
 
@@ -43,6 +49,12 @@ module.exports.create = (req, res, next) => {
 
 //aqui post
 module.exports.doCreate = function (req, res, next) {
+  
+  if (req.file){
+    req.body.image = req.file.path
+    }
+
+
   Rider.create(req.body)
     .then((riderDB) => res.redirect(`/riders/${riderDB.id}`))
     .catch((err) => {

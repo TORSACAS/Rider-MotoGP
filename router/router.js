@@ -3,6 +3,7 @@ const authController = require("../controllers/auth.controller");
 const usersController = require("../controllers/users.controller");
 const ridersController = require("../controllers/riders.controller");
 const commentsController = require("../controllers/comments.controller");
+const likesController = require("../controllers/like.controller");
 const authMiddleware = require("../middlewares/auth.middlewares");
 const upload = require("../config/storage.config");
 const passport = require('passport');
@@ -34,7 +35,6 @@ router.get("/profile", authMiddleware.isAuthenticated, usersController.profile);
 // riders
 router.get("/riders", ridersController.list);
 
-
 router.get("/riders/create", /*authMiddleware.isAuthenticated,*/ ridersController.create);
 router.post("/riders/create", /*authMiddleware.isAuthenticated,*/ upload.single('image'), ridersController.doCreate);
 router.get("/riders/:id", /*authMiddleware.isAuthenticated,*/ ridersController.details);
@@ -46,6 +46,11 @@ router.post("/riders/:id/update", /*authMiddleware.isAuthenticated,*/ upload.sin
 
 router.get("/comments/:id/delete", /*authMiddleware.isAuthenticated,*/ commentsController.delete);
 router.post("/comments/:id/create", /*authMiddleware.isAuthenticated,*/ commentsController.doCreate);
+
+// likes
+
+router.post("/user/:riderId/like", likesController.doCreate)
+
 
 
 //riders/:id/favourite - la ruta
