@@ -7,14 +7,14 @@ const RiderSchema = mongoose.Schema(
     },
     name: {
       type: String,
-      required: true,
+
     },
     flag: {
       type: String,
     },
     nationality: {
       type: String,
-      required: true,
+
     },
     bike: {
       type: String,
@@ -46,9 +46,15 @@ const RiderSchema = mongoose.Schema(
     races: {
       type: String,
     },
+    merchandising: {
+      type: String,
+    },
     legend: {
       type: Boolean,
       default: false,
+    },
+    gallery: {
+      type: [String],
     },
   },
   {

@@ -1,5 +1,6 @@
 const Rider = require("../models/Rider.model");
 const Comment = require("../models/Comment.model");
+const User = require('../models/User.model');
 
 module.exports.list = function (req, res, next) {
   const query = {};
@@ -15,9 +16,8 @@ module.exports.list = function (req, res, next) {
   Rider.find(query)
     .populate('likes')
     .then((riders) => {
-    console.log(riders)
-    res.render("riders/list", { riders })
-  })
+      res.render("riders/list", { riders, isLegendView: riders[0].legend })
+    })
     .catch((error) => next(error));
 };
 
@@ -33,7 +33,7 @@ module.exports.details = function (req, res, next) {
     })
     .then((rider) => {
       if (rider) {
-        console.log(rider);
+
         res.render("riders/details", { rider });
       } else {
         res.redirect("/riders");
@@ -49,17 +49,26 @@ module.exports.create = (req, res, next) => {
 
 //aqui post
 module.exports.doCreate = function (req, res, next) {
-  
-  if (req.file){
-    req.body.image = req.file.path
-    }
-
-
+  console.log("esto lleva la req", req);
+  // Si existe un archivo en la solicitud, es la imagen principal
+  if (req.files.image) {
+    console.log("Este es el path de la imagen", req.files.image[0].path)
+    req.body.image = req.files.image[0].path;
+    console.log("imagen principal", req.file)
+  }
+  // Si existen archivos en la solicitud con el campo 'gallery', son las imágenes de la galería
+  if (req.files.gallery) {
+    console.log("Files -> ", req.files)
+    req.body.gallery = req.files.gallery.map(file => file.path);
+    console.log("galeriaaa", req.files.gallery)
+  }
   Rider.create(req.body)
-    .then((riderDB) => res.redirect(`/riders/${riderDB.id}`))
+    .then((riderDB) => {
+      console.log("rider despuest de la db ", riderDB)
+      res.redirect(`/riders/${riderDB.id}`);
+    })
     .catch((err) => {
-      //Comprobar err instanceof mongoose.ValidationError
-
+      // Comprobar err instanceof mongoose.ValidationError
       next(err);
     });
 };
@@ -75,12 +84,18 @@ module.exports.doUpdate = function (req, res, next) {
   const { id } = req.params;
   const updates = { ...req.body };
 
-  if (req.file) {
-    updates.image = req.file.path;
+  console.log("------------>>>>>>>>> ", req.files.image)
+
+  if (req.files.image) {
+    updates.image = req.files.image[0].path;
+  }
+
+  if (req.files) {
+    updates.gallery = req.files.gallery.map(galery => galery.path);
   }
 
   Rider.findByIdAndUpdate(id, updates, { new: true })
-    .then((riderDB) => res.redirect(`/riders/${id}`))
+    .then((riderDB) => res.redirect(`/riders/${riderDB.id}`))
     .catch((err) => {
       //Comprobar err instanceof mongoose.ValidationError
 
@@ -93,4 +108,19 @@ module.exports.delete = (req, res, next) => {
   Rider.findByIdAndDelete(id)
     .then((rider) => res.redirect("/riders"))
     .catch((error) => next(error));
+};
+
+
+module.exports.gallery = (req, res, next) => {
+  const { id } = req.params;
+  console.log("que es lo que recibo ", id)
+  Rider.findById(id)
+    .then((rider) => {
+      console.log("este es mi rider", rider)
+      const arrGallery = rider.gallery;
+      res.render('riders/gallery', { arrGallery, rider });
+    })
+    .catch((err) => {
+      next(err)
+    })
 };
