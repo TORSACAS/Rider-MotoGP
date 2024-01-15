@@ -13,11 +13,21 @@
         class="{{#if errors}}is-invalid{{/if}} form-control" id="name" aria-describedby="nameHelp">
     </div>
     <div class="mb-3">
-      <label for="flag" style="color: #3498DB;" class="form-label">Flag</label>
-      <input {{#if rider}}value="{{rider.flag}}" {{else}}placeholder="Type flag" {{/if}} type="text" name="flag"
-        class="{{#if errors}}is-invalid{{/if}} form-control" id="flag">
+      <label for="flag" style="color: #3498db;" class="form-label">Flag</label>
+      <select name="flag" class="form-select" aria-label="Default select example">
+        {{#each flagEnumValues}}
+        {{#if rider.flag }}
+        <option value="{{rider.flag}}" {{#isSelected selectValue=this dbValue=../rider.flag}}selected{{/isSelected}}>
+          {{this}}
+        </option>
+        {{else}}
+        <option value="{{this}}" {{#isSelected selectValue=this dbValue='Other' }}selected{{/isSelected}}>{{this}}
+        </option>
+        {{/if}}
+        {{/each}}
+      </select>
     </div>
-    <div class="mb-3">
+    <div class="mb-3 dropdown">
       <label for="nationality" style="color: #3498DB;" class="form-label">Nationality</label>
       <input {{#if rider}}value="{{rider.nationality}}" {{else}}placeholder="Type nationality" required{{/if}}
         type="text" name="nationality" class="{{#if errors}}is-invalid{{/if}} form-control" id="nationality">
@@ -28,24 +38,45 @@
         class="{{#if errors}}is-invalid{{/if}} form-control" id="bike">
     </div>
     <div class="mb-3">
+      <label for="victories" style="color: #3498DB;" class="form-label">Victories</label>
+      <input {{#if rider}}value="{{rider.victories}}" {{else}}placeholder="Victories" {{/if}} type="number"
+        name="victories" class="{{#if errors}}is-invalid{{/if}} form-control" id="victories">
+    </div>
+    <div class="mb-3">
+      <label for="story" style="color: #3498DB;" class="form-label">Story</label>
+      <textarea {{#if rider}}placeholder="{{rider.story}}" {{else}}placeholder="Type story" {{/if}} name="story"
+        class="{{#if errors}}is-invalid{{/if}} form-control" id="story"
+        rows="4">{{#if rider}}{{rider.story}}{{/if}}</textarea>
+    </div>
+    <div class="mb-3">
       <label for="dateOfBirth" style="color: #3498DB;" class="form-label">Date of Birth</label>
-      <input {{#if rider}}value="{{rider.dateOfBirth}}" {{else}}placeholder="Type date of birth" {{/if}} type="text"
+      <input {{#if rider}} value="{{rider.dateOfBirth}}" {{else}} placeholder="Type date of birth" {{/if}} type="text"
         name="dateOfBirth" class="{{#if errors}}is-invalid{{/if}} form-control" id="dateOfBirth">
     </div>
+
     <div class="mb-3">
       <label for="placeOfBirth" style="color: #3498DB;" class="form-label">Place of Birth</label>
       <input {{#if rider}}value="{{rider.placeOfBirth}}" {{else}}placeholder="Type place of birth" {{/if}} type="text"
         name="placeOfBirth" class="{{#if errors}}is-invalid{{/if}} form-control" id="placeOfBirth">
     </div>
-    <!-- Agregar los demás campos de acuerdo al modelo -->
-    <!-- Campos comunes a todos los formularios -->
+
+
+    <div class="mb-3">
+      <label for="legend" style="color: #3498DB;" class="form-label">Is legend?</label>
+      <select name="legend" class="form-select" aria-label="Default select example">
+        <option>true</option>
+        <option>false</option>
+      </select>
+    </div>
+
+
     <div class="mb-3">
       <label for="image" style="color: #3498DB;" class="form-label">Image</label>
       <input placeholder="Upload an image" type="file" name="image" class="{{#if errors}}is-invalid{{/if}} form-control"
         id="image">
     </div>
     <div class="mb-3">
-      <label for="gallery" style="color: #3498DB;" class="form-label">Gallery</label>
+      <label for="gallery" style="color: #3498DB;" class="form-label">Gallery </label>
       <input placeholder="Upload an image" type="file" name="gallery"
         class="{{#if errors}}is-invalid{{/if}} form-control" id="gallery" multiple="multiple">
     </div>
@@ -55,8 +86,8 @@
     </div>
     {{/if}}
     {{#if rider}}
-    <button type="submit" class="btn btn-success"><i data-feather="edit"></i></button>
-    <a href="/riders/{{rider._id}}" class="btn btn-secondary"><i data-feather="skip-back"></i></a>
+    <button type="submit" class="btn btn-success"><i data-feather="edit-3"></i></button>
+    <a href="/riders/{{rider._id}}" class="btn btn-secondary"><i data-feather="corner-down-left"></i></a>
     {{else}}
     <button type="submit" class="btn btn-success">Create</button>
     {{/if}}
